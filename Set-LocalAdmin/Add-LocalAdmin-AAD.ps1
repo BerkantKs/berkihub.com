@@ -40,19 +40,15 @@ try {
     #localadmin path for detection
     $localAdminsPath = "HKLM:\Software\IntuneManaged\LocalAdmins"
     $LocalAdminExists = (Get-ItemProperty $localAdminsPath -EA 0)."$UPN"
-    if ($UPN) {
-        if (!($LocalAdminExists -eq "1")) {
-            Add-LocalGroupMember -Group $Localadmingroupname -Member "Azuread\$UPN" -EA 0
-            LogMessage "Added AzureAD\$UPN as local administrator."
-            #add registry key for detection
-            & REG add "HKLM\Software\IntuneManaged\LocalAdmins" /v "$UPN" /t REG_DWORD /d 1 /f /reg:64 | Out-Null
-        }
-        else {
-            LogMessage "AzureAD\$UPN is already a local administrator."
-        }
+
+    if (!($LocalAdminExists -eq "1")) {
+        Add-LocalGroupMember -Group $Localadmingroupname -Member "Azuread\$UPN" -EA 0
+        LogMessage "Added AzureAD\$UPN as local administrator."
+        #add registry key for detection
+        & REG add "HKLM\Software\IntuneManaged\LocalAdmins" /v "$UPN" /t REG_DWORD /d 1 /f /reg:64 | Out-Null
     }
     else {
-        LogMessage "Failed to find an administrator candidate in registry."
+        LogMessage "AzureAD\$UPN is already a local administrator."
     }
 }
 catch {
