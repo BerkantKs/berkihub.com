@@ -22,13 +22,12 @@ function LogMessage([string]$message) {
 
 # Script to make the user which enrolled the device to AAD a local admin
 try {
+
+    #Get local Administrators group
     $LocalAdminGroup = Get-LocalGroup -SID "S-1-5-32-544"
     $Localadmingroupname = $LocalAdminGroup.name
 
-    # Get the UPN of the user that enrolled the computer to AAD
-    $AADInfo = Get-Item "HKLM:/SYSTEM/CurrentControlSet/Control/CloudDomainJoin/JoinInfo"
-
-    #Get the UPN of the user that enrolled the computer to AAD
+    #Get the UPN of the user who enrolled the computer to AAD
     $AADInfoPath = "HKLM:/SYSTEM/CurrentControlSet/Control/CloudDomainJoin/JoinInfo"
     $AADInfo = Get-Item $AADInfoPath
     $guid = ($AADInfo | Get-ChildItem | Where-Object { $_.Property -contains "UserEmail" }).PSChildName

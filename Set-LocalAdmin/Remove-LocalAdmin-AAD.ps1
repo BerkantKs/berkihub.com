@@ -24,7 +24,7 @@ try {
     $LocalAdminGroup = Get-LocalGroup -SID "S-1-5-32-544"
     $Localadmingroupname = $LocalAdminGroup.name
 
-    #Get the UPN of the user that enrolled the computer to AAD
+    #Get the UPN of the user who enrolled the computer to AAD
     $AADInfoPath = "HKLM:/SYSTEM/CurrentControlSet/Control/CloudDomainJoin/JoinInfo"
     $AADInfo = Get-Item $AADInfoPath
     $guid = ($AADInfo | Get-ChildItem | Where-Object { $_.Property -contains "UserEmail" }).PSChildName
@@ -40,7 +40,7 @@ try {
 
     if ($LocalAdminExists -eq "1") {
         LogMessage "Removing AzureAD\$UPN as a local administrator."
-        Remove-LocalGroupMember -Group $Localadmingroupname -member "Azuread\$UPN" -ErrorAction Stop
+        Remove-LocalGroupMember -Group $Localadmingroupname -member "Azuread\$UPN" -EA 0
         LogMessage "Removed AzureAD\$UPN as a local administrator."
         Remove-ItemProperty -Path $localAdminsPath -Name $UPN -ErrorAction Stop
     }
